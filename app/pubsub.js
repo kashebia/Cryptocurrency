@@ -8,9 +8,9 @@ const credentials = {
 };
 
 const CHANNELS = {
-    TEST: 'TEST',
-    BLOCKCHAIN: 'BLOCKCHAIN',
-    TRANSACTION: 'TRANSACTION'
+    TEST:'TEST',
+    BLOCKCHAIN:'BLOCKCHAIN',
+    TRANSACTION:'TRANSACTION'
   };
   
   class PubSub {
@@ -85,19 +85,7 @@ const CHANNELS = {
       this.pubnub.publish({ message, channel });
     }
   
-    broadcastChain() {
-      this.publish({
-        channel: CHANNELS.BLOCKCHAIN,
-        message: JSON.stringify(this.blockchain.chain)
-      });
-    }
-  
-    broadcastTransaction(transaction) {
-      this.publish({
-        channel: CHANNELS.TRANSACTION,
-        message: JSON.stringify(transaction)
-      });
-    }
+    
   }
   
   module.exports = PubSub;
