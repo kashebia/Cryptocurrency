@@ -1,6 +1,7 @@
-const Transcation = require('./transaction');
+const Transaction = require('./transaction');
 const Wallet = require('./index');
 const { verifySignature } = require('../util');
+const { REWARD_INPUT, MINING_REWARD } = require('../config');
 describe('Transaction', () => {
 
     let transaction, senderWallet, recipient, amount;
@@ -9,7 +10,7 @@ describe('Transaction', () => {
         recipient = 'recipient-public-key';
         amount=50;
 
-        transaction = new Transcation({senderWallet, recipient, amount});
+        transaction = new Transaction({senderWallet, recipient, amount});
 
     });
     it('has an `id`', ()=> {
@@ -70,7 +71,7 @@ describe('Transaction', () => {
 
     describe('when the transaction is valid',()=>{
         it('returns true',()=>{
-            expect(Transcation.validTransaction(transaction)).toBe(true);
+            expect(Transaction.validTransaction(transaction)).toBe(true);
         });
     });
 
@@ -79,7 +80,7 @@ describe('Transaction', () => {
             it('returns false and logs an error',()=>{
                 transaction.outputMap[senderWallet.publicKey]=999999;
 
-                expect(Transcation.validTransaction(transaction)).toBe(false);
+                expect(Transaction.validTransaction(transaction)).toBe(false);
                 expect(errorMock).toHaveBeenCalled();
             });
         });
@@ -88,7 +89,7 @@ describe('Transaction', () => {
             it('returns false and logs an error',()=>{
                 transaction.input.signature = new Wallet().sign('data');
 
-                expect(Transcation.validTransaction(transaction)).toBe(false);
+                expect(Transaction.validTransaction(transaction)).toBe(false);
                 expect(errorMock).toHaveBeenCalled();
             });
         });
@@ -154,13 +155,30 @@ describe('Transaction', () => {
 
             it('subtracts the amount from the original sender output amount',()=>{
                 expect(transaction.outputMap[senderWallet.publicKey])
-                .toEqual(originalSenderOutput- nextAmount -addedAmount);
+                .toEqual(originalSenderOutput- nextAmount -addedAmount); 
             });
         });
 
     });
 
   
+   });
+
+   describe('rewardTransaction',()=>{
+    let rewardTransaction, minerWallet;
+
+    beforeEach(()=>{
+        minerWallet = new Wallet();
+        rewardTransaction = Transaction.rewardTransaction({minerWallet});
+
+    });
+    it('creates a transaction with the reward input',()=>{
+        expect(rewardTransaction.input).toEqual(REWARD_INPUT);
+    });
+
+    it('creates one transaction for the miner with the `MINING_REWARD`',()=>{
+        expect(rewardTransaction.outputMap[minerWallet.publicKey]).toEqual(MINING_REWARD);
+    });
    });
 
 });

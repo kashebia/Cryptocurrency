@@ -1,5 +1,6 @@
 const Block=require('./block');
 const {cryptoHash}=require('../util');
+const { REWARD_INPUT, MINING_REWARD } = require('../config');
 
 class Blockchain{
     constructor(){
@@ -13,6 +14,7 @@ class Blockchain{
         this.chain.push(newBlock);
 
     }
+    
     replaceChain(chain){
         if(chain.length<=this.chain.length)
         {
@@ -24,11 +26,14 @@ class Blockchain{
             console.error('The incoming chain must be valid');
             return;
         }
+
+        
+        
         console.log('replacing chain with',chain);
         this.chain=chain;
 
     }
-  
+    
 
     static isValidChain(chain) {
         if (JSON.stringify(chain[0]) !== JSON.stringify(Block.genesis())){ 
