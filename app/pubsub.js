@@ -56,9 +56,9 @@ const CHANNELS = {
   
           switch(channel) {
             case CHANNELS.BLOCKCHAIN:
-              this.blockchain.replaceChain(parsedMessage, true, () => {
+              this.blockchain.replaceChain(parsedMessage,true, () => {
                 this.transactionPool.clearBlockchainTransactions(
-                  { chain: parsedMessage.chain }
+                  { chain: parsedMessage }
                 );
               });
               break;
